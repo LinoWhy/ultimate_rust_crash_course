@@ -30,9 +30,9 @@ fn main() {
     // 4. Uncomment and adjust the code below to match how you defined your
     // Grapes struct.
     //
-    //let mut grapes = Grapes { amount_left: 100 };
-    //grapes.bite();
-    //println!("Eat a grape: {:?}", grapes);
+    let mut grapes = Grapes { amount_left: 100 };
+    grapes.bite();
+    println!("Eat a grape: {:?}", grapes);
 
     // Challenge: Uncomment the code below. Create a generic `bunny_nibbles`
     // function that:
@@ -41,8 +41,12 @@ fn main() {
     // Hint: Define the generic type between the function name and open paren:
     //       fn function_name<T: Bite>(...)
     //
-    //bunny_nibbles(&mut carrot);
-    //println!("Bunny nibbles for awhile: {:?}", carrot);
+    bunny_nibbles(&mut carrot);
+    println!("Bunny nibbles (carrot) for awhile: {:?}", carrot);
+
+    bunny_nibbles(&mut grapes);
+    println!("Bunny nibbles (grapes) for awhile: {:?}", grapes);
+
 }
 
 #[derive(Debug)] // This enables using the debugging format string "{:?}"
@@ -50,9 +54,32 @@ struct Carrot {
     percent_left: f32,
 }
 
+#[derive(Debug)] // This enables using the debugging format string "{:?}"
+struct Grapes {
+    amount_left: u32,
+}
+
+
+trait Bite {
+    // add code here
+    fn bite(&mut self);
+    // fn bite(self: &mut Self);
+}
+
 impl Bite for Carrot {
-    fn bite(self: &mut Self) {
+    fn bite(&mut self) {
         // Eat 20% of the remaining carrot. It may take awhile to eat it all...
         self.percent_left *= 0.8;
     }
+}
+
+impl Bite for Grapes {
+    fn bite(&mut self) {
+        // Eat 20% of the remaining carrot. It may take awhile to eat it all...
+        self.amount_left -= 1;
+    }
+}
+
+fn bunny_nibbles<T: Bite>(n: &mut T) {
+    n.bite();
 }
