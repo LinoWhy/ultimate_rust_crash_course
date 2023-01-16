@@ -36,6 +36,60 @@ fn main() {
     if args.is_empty() {
         print_usage_and_exit();
     }
+
+    // handle_once(&mut args);
+
+    handle_stack(&mut args);
+}
+
+fn handle_stack(args: &mut Vec<String>) {
+    if args.len() < 3 {
+        print_usage_and_exit();
+    }
+
+    let mut infile = args.remove(0);
+    let outfile = args.remove(0);
+
+    while !args.is_empty() {
+        let subcommand = args.remove(0);
+        match subcommand.as_str() {
+            "blur" => {
+                let factor: f32 = args.remove(0).parse().expect("Failed to parse a number");
+                blur(infile.clone(), outfile.clone(), factor);
+                infile = outfile.clone();
+            }
+            "brighten" => {
+                let factor: i32 = args.remove(0).parse().expect("Failed to parse a number");
+                brighten(infile.clone(), outfile.clone(), factor);
+                infile = outfile.clone();
+            }
+            "crop" => {
+                let x: u32 = args.remove(0).parse().expect("Failed to parse a number");
+                let y: u32 = args.remove(0).parse().expect("Failed to parse a number");
+                let width: u32 = args.remove(0).parse().expect("Failed to parse a number");
+                let height: u32 = args.remove(0).parse().expect("Failed to parse a number");
+                crop(infile.clone(), outfile.clone(), x, y, width, height);
+                infile = outfile.clone();
+            }
+            "rotate" => {
+                let factor: u32 = args.remove(0).parse().expect("Failed to parse a number");
+                rotate(infile.clone(), outfile.clone(), factor);
+                infile = outfile.clone();
+            }
+            "invert" => {
+                invert(infile.clone(), outfile.clone());
+                infile = outfile.clone();
+            }
+            "grayscale" => {
+                grayscale(infile.clone(), outfile.clone());
+                infile = outfile.clone();
+            }
+            _ => print_usage_and_exit(),
+        }
+    }
+}
+
+fn handle_once(args: &mut Vec<String>) {
     let subcommand = args.remove(0);
     match subcommand.as_str() {
         // EXAMPLE FOR CONVERSION OPERATIONS
@@ -69,6 +123,7 @@ fn main() {
             }
             let infile = args.remove(0);
             let outfile = args.remove(0);
+            // let _factor: Vec<u32> = args.iter().filter_map(|x| x.parse::<u32>().ok()).collect();
             let x: u32 = args.remove(0).parse().expect("Failed to parse a number");
             let y: u32 = args.remove(0).parse().expect("Failed to parse a number");
             let width: u32 = args.remove(0).parse().expect("Failed to parse a number");
